@@ -29,6 +29,9 @@ inputs:
   version_prefix:
     description: 'Value prepended to auto-generated version.'
     required: false
+  rewrite:
+    description: 'Enables rewriting of matching sourcemaps so that indexed maps are flattened and missing sources are inlined if possible. Defaults to `true`.'
+    required: false
   set_commits:
     description: 'Specify whether to set commits for the release. Either "auto" or "skip".'
     required: false

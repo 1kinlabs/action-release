@@ -16,6 +16,7 @@ import * as process from 'process';
     const shouldFinalize = options.getBooleanOption('finalize', true);
     const ignoreMissing = options.getBooleanOption('ignore_missing', false);
     const ignoreEmpty = options.getBooleanOption('ignore_empty', false);
+    const rewrite = options.getBooleanOption('rewrite', true);
     const deployStartedAtOption = options.getStartedAt();
     const setCommitsOption = options.getSetCommitsOption();
     const projects = options.getProjects();
@@ -56,6 +57,7 @@ import * as process from 'process';
             dist,
             urlPrefix,
             stripCommonPrefix,
+            rewrite,
           };
           return cli.uploadSourceMaps(version, sourceMapOptions);
         })

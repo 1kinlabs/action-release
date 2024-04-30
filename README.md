@@ -71,6 +71,7 @@ Adding the following to your workflow will create a new Sentry release and tell 
 |`started_at`|Unix timestamp of the release start date. Omit for current time.|-|
 |`version`|Identifier that uniquely identifies the releases. _Note: the `refs/tags/` prefix is automatically stripped when `version` is `github.ref`._|<code>${{&nbsp;github.sha&nbsp;}}</code>|
 |`version_prefix`|Value prepended to auto-generated version. For example "v".|-|
+|`rewrite`|Enables rewriting of matching sourcemaps so that indexed maps are flattened and missing sources are inlined if possible.|`true`|
 |`set_commits`|Specify whether to set commits for the release. Either "auto" or "skip".|"auto"|
 |`projects`|Space-separated list of paths of projects. When omitted, falls back to the environment variable `SENTRY_PROJECT` to determine the project.|-|
 |`url_prefix`|Adds a prefix to source map urls after stripping them.|-|

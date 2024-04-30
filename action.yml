@@ -50,7 +50,7 @@ inputs:
 runs:
   using: 'docker'
   # If you change this, update the use-local-dockerfile action
-  image: 'docker://ghcr.io/1kinlabs/action-release-image:latest'
+  image: 'docker://ghcr.io/1kinlabs/action-release-image:master-d250f1d'
 branding:
   icon: 'triangle'
   color: 'purple'

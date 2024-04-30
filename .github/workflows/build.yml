@@ -3,14 +3,6 @@ on:
   push:
     branches:
       - master
-env:
-  # Variables defined in the repository
-  SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-  # For master we have an environment variable that selects the action-release project
-  # instead of action-release-prs
-  # For other branches: https://sentry-ecosystem.sentry.io/releases/?project=4505075304693760
-  # For master branch: https://sentry-ecosystem.sentry.io/releases/?project=6576594
-  SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
 
 jobs:
   docker-build:
@@ -22,42 +14,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    # BUILDKIT_INLINE_CACHE creates the image in such a way that you can
-    # then use --cache-from (think of a remote cache)
-    # This feature is allowed thanks to using the buildx plugin
-    #
-    # There's a COPY command in the builder stage that can easily invalidate the cache
-    # If you notice, please add more exceptions to .dockerignore since we loose the value
-    # of using --cache-from on the app stage
-    - name: Build Docker builder image
-      run: |
-        docker buildx build . \
-          --build-arg BUILDKIT_INLINE_CACHE=1 \
-          -t ghcr.io/getsentry/action-release-builder-image:latest \
-          --cache-from ghcr.io/getsentry/action-release-builder-image:latest \
-          --target builder
-
-    - name: Build Docker image
-      run: |
-        docker buildx build . \
-          --build-arg BUILDKIT_INLINE_CACHE=1 \
-          -t ghcr.io/getsentry/action-release-image:latest \
-          --cache-from ghcr.io/getsentry/action-release-image:latest \
-          --target app
-
-    - name: Login and publish
-      run: |
-        docker login ghcr.io -u $GITHUB_ACTOR --password-stdin <<< ${{ secrets.GITHUB_TOKEN }}
-        docker push ghcr.io/1kinlabs/action-release-builder-image:latest
-        docker push ghcr.io/1kinlabs/action-release-image:latest
-
-    # This step creates real Sentry releases for the action itself:
-    # https://sentry-ecosystem.sentry.io/releases/?project=6576594
-    - name: Sentry Release
-      uses: getsentry/action-release@v1
-      env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_LOG_LEVEL: debug
+    - name: build and push
+      uses: mr-smithers-excellent/docker-build-push@v6
       with:
-        environment: 'production'
-        ignore_missing: true
+        image: action-release-image
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}

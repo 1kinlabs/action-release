@@ -14,14 +14,16 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Build Docker image
-      run: |
-        docker buildx build . \
-          --build-arg BUILDKIT_INLINE_CACHE=1 \
-          -t ghcr.io/1kinlabs/action-release-image:latest \
-          --target app
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Login and publish
-      run: |
-        docker login ghcr.io -u $GITHUB_ACTOR --password-stdin <<< ${{ secrets.GITHUB_TOKEN }}
-        docker push ghcr.io/1kinlabs/action-release-image:latest
+    - name: Build and push
+      id: build-image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=min
+        tags: ${{ steps.login-ecr.outputs.registry }}/sentry-release:${{ env.NOW }}-${{ github.sha }}

@@ -50,7 +50,7 @@ inputs:
 runs:
   using: 'docker'
   # If you change this, update the use-local-dockerfile action
-  image: 'docker://ghcr.io/1kinlabs/action-release-image:latest'
+  image: 'docker://437255750119.dkr.ecr.us-west-2.amazonaws.com/sentry-release:latest"
 branding:
   icon: 'triangle'
   color: 'purple'
